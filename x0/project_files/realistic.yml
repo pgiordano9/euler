@@ -30,3 +30,12 @@ jobs:
           - lab
         execution_environment: iaas-ee
         scm_branch: deployment
+  - name: 'Test other'
+    playbook: 'other.yml'
+    scm_branch: job
+    deployments:
+      - name: Prod
+        controllers:
+          - prod
+        execution_environment: iaas-ee
+        scm_branch: deployment

@@ -1,6 +1,5 @@
-import os
-import yaml
-import pytest
+#import os
+#import pytest
 from process import extract_branches
 
 FILES_DIR = "project_files"
@@ -90,7 +89,7 @@ def test_extract_branches():
 
     # Realistic example.
     assert extract_branches(os.path.join(FILES_DIR, "realistic.yml")) == {
-        "deployment": ["lab"],
+        "deployment": ["prod", "lab"],
         "job": ["lab"],
         "project": ["prod"],
     }
