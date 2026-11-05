@@ -1,0 +1,32 @@
+---
+controllers:
+  - prod
+  - lab
+scm_url: 'https://github.com/wp-iaas/Create-EEs-Action.git'
+scm_branch: project
+credential: 'cred'
+jobs:
+  - name: 'Test prod'
+    playbook: 'prod.yml'
+    deployments:
+      - name: Prod
+        controllers:
+          - prod
+        execution_environment: iaas-ee
+  - name: 'Test EDE'
+    playbook: 'ede.yml'
+    scm_branch: job
+    deployments:
+      - name: Prod
+        controllers:
+          - lab
+        execution_environment: iaas-ee
+  - name: 'Test lab'
+    playbook: 'lab.yml'
+    scm_branch: job
+    deployments:
+      - name: Prod
+        controllers:
+          - lab
+        execution_environment: iaas-ee
+        scm_branch: deployment

@@ -87,3 +87,10 @@ def test_extract_branches():
     assert extract_branches(os.path.join(FILES_DIR, "all_branches.yml")) == {
         "deployment": ["prod"]
     }
+
+    # Realistic example.
+    assert extract_branches(os.path.join(FILES_DIR, "realistic.yml")) == {
+        "deployment": ["lab"],
+        "job": ["lab"],
+        "project": ["prod"],
+    }
