@@ -1,5 +1,6 @@
 import yaml
 
+
 def extract_branches(project_filepath: str) -> dict:
     """Extract branches and corresponding AAP controllers from a project CaC file.
 
@@ -20,17 +21,35 @@ def extract_branches(project_filepath: str) -> dict:
     """
 
     with open(project_filepath, "r", encoding="utf-8") as file:
+        branches = {}
         project_cac = yaml.safe_load(file)
-
+        project_branch = project_cac.get("scm_branch")
         jobs = project_cac["jobs"]
 
         for job in jobs:
+            if "scm_branch" in job:
+                job_branch = job["scm_branch"]
+            else:
+                job_branch = project_branch
+
             for deployment in job["deployments"]:
-                print(deployment)
+                if "scm_branch" in deployment:
+                    deployment_branch = deployment["scm_branch"]
+                else:
+                    deployment_branch = job_branch
 
-    return {}
+                if deployment_branch in branches:
+                    current_controllers = branches[deployment_branch]
+                    branches[deployment_branch] = list(
+                        set(current_controllers + deployment["controllers"])
+                    )
+                else:
+                    branches[deployment_branch] = deployment["controllers"]
 
-extract_branches("project_files/one_default_one_deployment.yml")
+    return branches
+
+
+print(extract_branches("project_files/realistic.yml"))
 
 
 def process_project_files(projects_dir: str) -> dict:
