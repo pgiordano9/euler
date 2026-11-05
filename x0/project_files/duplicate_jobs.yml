@@ -2,7 +2,7 @@
 controllers:
   - prod
 scm_url: 'https://github.com/wp-iaas/Create-EEs-Action.git'
-scm_branch: main
+scm_branch: project
 credential: 'cred'
 jobs:
   - name: 'Test'
