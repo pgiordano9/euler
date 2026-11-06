@@ -23,6 +23,10 @@ def extract_branches(project_filepath: str) -> dict:
     with open(project_filepath, "r", encoding="utf-8") as file:
         branches = {}
         project_cac = yaml.safe_load(file)
+
+        if project_cac == None:
+            return {}
+
         project_branch = project_cac.get("scm_branch")
         jobs = project_cac["jobs"]
 
@@ -49,7 +53,7 @@ def extract_branches(project_filepath: str) -> dict:
     return branches
 
 
-print(extract_branches("project_files/realistic.yml"))
+print(extract_branches("project_files/empty_file.yml"))
 
 
 def process_project_files(projects_dir: str) -> dict:
