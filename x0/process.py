@@ -28,7 +28,7 @@ def extract_branches(project_filepath: str) -> dict:
             return {}
 
         project_branch = project_cac.get("scm_branch")
-        jobs = project_cac["jobs"]
+        jobs = project_cac.get("jobs", [])
 
         for job in jobs:
             if "scm_branch" in job:
