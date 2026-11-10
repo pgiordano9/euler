@@ -1,7 +1,7 @@
 import os
 import pytest
 import yaml
-from process import extract_branches
+from process import extract_branches, process_projects
 
 FILES_DIR = "project_files"
 
@@ -99,3 +99,8 @@ def test_extract_branches():
     assert extract_branches(os.path.join(FILES_DIR, "different_controllers.yml")) == {
         "project": ["prod", "lab"],
     }
+
+
+def test_process_projects():
+
+    assert process_projects(FILES_DIR) == {}
