@@ -24,6 +24,7 @@ def extract_branches(project_filepath: str) -> dict:
         branches = {}
         project_cac = yaml.safe_load(file)
 
+        # If empty YAML file.
         if project_cac == None:
             return {}
 
@@ -31,24 +32,27 @@ def extract_branches(project_filepath: str) -> dict:
         jobs = project_cac.get("jobs", [])
 
         for job in jobs:
-            if "scm_branch" in job:
-                job_branch = job["scm_branch"]
-            else:
-                job_branch = project_branch
+            job_branch = job.get("scm_branch")
 
             for deployment in job["deployments"]:
-                if "scm_branch" in deployment:
-                    deployment_branch = deployment["scm_branch"]
-                else:
-                    deployment_branch = job_branch
+                deployment_branch = deployment.get("scm_branch")
 
-                if deployment_branch in branches:
-                    current_controllers = branches[deployment_branch]
-                    branches[deployment_branch] = list(
-                        set(current_controllers + deployment["controllers"])
-                    )
-                else:
-                    branches[deployment_branch] = deployment["controllers"]
+                # Set branch based on order of priority: deployment first, then job, then project.
+                if deployment_branch:
+                    branch = deployment_branch
+                elif job_branch:
+                    branch = job_branch
+
+                branch = project_branch
+
+                if branch:
+                    if deployment_branch in branches:
+                        current_controllers = branches[deployment_branch]
+                        branches[deployment_branch] = list(
+                            set(current_controllers + deployment["controllers"])
+                        )
+                    else:
+                        branches[deployment_branch] = deployment["controllers"]
 
     return branches
 
