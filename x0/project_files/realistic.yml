@@ -2,7 +2,7 @@
 controllers:
   - prod
   - lab
-scm_url: 'https://github.com/wp-iaas/Create-EEs-Action.git'
+scm_url: 'https://github.com/realistic.git'
 scm_branch: project
 credential: 'cred'
 jobs:
