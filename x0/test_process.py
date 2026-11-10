@@ -94,3 +94,8 @@ def test_extract_branches():
         "job": ["lab"],
         "project": ["prod"],
     }
+
+    # Two deployments with same branch but different controllers.
+    assert extract_branches(os.path.join(FILES_DIR, "different_controllers.yml")) == {
+        "project": ["prod", "lab"],
+    }

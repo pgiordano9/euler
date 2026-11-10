@@ -46,9 +46,9 @@ def extract_branches(project_filepath: str) -> dict:
                     branch = project_branch
 
                 if branch:
-                    if deployment_branch in branches:
+                    if branch in branches:
                         current_controllers = branches[branch]
-                        branches[deployment_branch] = list(
+                        branches[branch] = list(
                             set(current_controllers + deployment["controllers"])
                         )
                     else:
