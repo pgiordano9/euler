@@ -47,17 +47,17 @@ def extract_branches(project_filepath: str) -> dict:
 
                 if branch:
                     if deployment_branch in branches:
-                        current_controllers = branches[deployment_branch]
+                        current_controllers = branches[branch]
                         branches[deployment_branch] = list(
                             set(current_controllers + deployment["controllers"])
                         )
                     else:
-                        branches[deployment_branch] = deployment["controllers"]
+                        branches[branch] = deployment["controllers"]
 
     return branches
 
 
-print(extract_branches("project_files/empty_file.yml"))
+print(extract_branches("project_files/single_quotes.yml"))
 
 
 def process_project_files(projects_dir: str) -> dict:
