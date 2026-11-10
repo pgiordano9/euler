@@ -42,8 +42,8 @@ def extract_branches(project_filepath: str) -> dict:
                     branch = deployment_branch
                 elif job_branch:
                     branch = job_branch
-
-                branch = project_branch
+                else:
+                    branch = project_branch
 
                 if branch:
                     if deployment_branch in branches:
@@ -57,7 +57,7 @@ def extract_branches(project_filepath: str) -> dict:
     return branches
 
 
-print(extract_branches("project_files/single_quotes.yml"))
+print(extract_branches("project_files/different_cases.yml"))
 
 
 def process_project_files(projects_dir: str) -> dict:
