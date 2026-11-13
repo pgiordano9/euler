@@ -80,3 +80,7 @@ def process_projects(projects_dir: str) -> dict:
         }
 
     """
+    for resource_filepath in glob.glob(standard_resource + "/*.yml"):
+        with open(resource_filepath, "r", encoding="utf-8") as file:
+            resource_cac = yaml.safe_load(file)
+
