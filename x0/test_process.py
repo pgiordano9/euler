@@ -25,7 +25,7 @@ def test_extract_branches():
 
     # Single quotes.
     assert extract_branches(os.path.join(FILES_DIR, "single_quotes.yml")) == {
-        "main": ["prod"],
+        "rand": ["prod"],
     }
 
     # Double quotes.
@@ -113,6 +113,9 @@ def test_process_projects():
             ],
             'deployment': [
                 'lab',
+                'prod',
+            ],
+            'rand': [
                 'prod',
             ],
         },
