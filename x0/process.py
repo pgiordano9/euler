@@ -1,4 +1,5 @@
 import yaml
+import glob
 
 
 def extract_branches(project_filepath: str) -> dict:
@@ -51,6 +52,7 @@ def extract_branches(project_filepath: str) -> dict:
                         branches[branch] = list(
                             set(current_controllers + deployment["controllers"])
                         )
+                        branches[branch].sort()
                     else:
                         branches[branch] = deployment["controllers"]
 
@@ -80,7 +82,21 @@ def process_projects(projects_dir: str) -> dict:
         }
 
     """
-    for resource_filepath in glob.glob(standard_resource + "/*.yml"):
-        with open(resource_filepath, "r", encoding="utf-8") as file:
-            resource_cac = yaml.safe_load(file)
 
+    branches = {}
+
+    for project_filepath in glob.glob(projects_dir + "/*.yml"):
+        with open(project_filepath, "r", encoding="utf-8") as file:
+            try:
+                project_cac = yaml.safe_load(file)
+
+                if "scm_url" in project_cac:
+                    project_url = project_cac["scm_url"]
+                    branches[project_url] = extract_branches(project_filepath)
+            except:
+                next
+
+    return branches
+
+
+extract_branches("project_files/different_controllers.yml")

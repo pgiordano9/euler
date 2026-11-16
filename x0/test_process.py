@@ -90,17 +90,92 @@ def test_extract_branches():
 
     # Realistic example.
     assert extract_branches(os.path.join(FILES_DIR, "realistic.yml")) == {
-        "deployment": ["prod", "lab"],
+        "deployment": ["lab", "prod"],
         "job": ["lab"],
         "project": ["prod"],
     }
 
     # Two deployments with same branch but different controllers.
     assert extract_branches(os.path.join(FILES_DIR, "different_controllers.yml")) == {
-        "project": ["prod", "lab"],
+        "project": ["lab", "prod"],
     }
 
 
 def test_process_projects():
 
-    assert process_projects(FILES_DIR) == {}
+    assert process_projects(FILES_DIR) == {
+        'https://github.com/realistic.git': {
+            'project': [
+                'prod',
+            ],
+            'job': [
+                'lab',
+            ],
+            'deployment': [
+                'lab',
+                'prod',
+            ],
+        },
+        'https://github.com/no_jobs.git': {},
+        'https://github.com/duplicate_jobs.git': {
+            'project': [
+                'prod',
+            ],
+        },
+        'https://github.com/double_quotes.git': {
+            'main': [
+                'prod',
+            ],
+        },
+        'https://github.com/project_and_deployment_branch.git': {
+            'deployment': [
+                'prod',
+            ],
+        },
+        'https://github.com/project_branch.git': {
+            'project': [
+                'prod',
+            ],
+        },
+        'https://github.com/job_and_deployment_branch.git': {
+            'deployment': [
+                'prod',
+            ],
+        },
+        'https://github.com/all_branches.git': {
+            'deployment': [
+                'prod',
+            ],
+        },
+        'https://github.com/project_and_job_branch.git': {
+            'job': [
+                'prod',
+            ],
+        },
+        'https://github.com/null_branch.git': {},
+        'https://github.com/different_controllers.git': {
+            'project': [
+                'lab',
+                'prod',
+            ],
+        },
+        'https://github.com/no_branch.git': {},
+        'https://github.com/job_branch.git': {
+            'job': [
+                'prod',
+            ],
+        },
+        'https://github.com/different_cases.git': {
+            'main': [
+                'prod',
+            ],
+            'MAIN': [
+                'prod',
+            ],
+        },
+        'https://github.com/deployment_branch.git': {
+            'deployment': [
+                'prod',
+            ],
+        },
+     }   
