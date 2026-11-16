@@ -1,9 +1,35 @@
 import os
 import pytest
 import yaml
-from process import extract_branches, process_projects
+from process import combine_projects, extract_branches, process_projects
 
 FILES_DIR = "project_files"
+
+
+def test_combine_projects():
+    # Empty dicts.
+    assert combine_projects({}, {}) == {}
+
+    # Invalid argument.
+    with pytest.raises(ValueError):
+        assert combine_projects({"a": "b"}, {})
+
+    # No shared branches.
+    assert combine_projects({"project": ["lab"]}, {"job": ["prod"]}) == {
+        "project": ["lab"],
+        "job": ["prod"],
+    }
+
+    # Shared branches.
+    assert combine_projects({"project": ["lab"]}, {"project": ["prod"]}) == {
+        "project": ["lab", "prod"]
+    }
+
+    # Realistic example.
+    assert combine_projects(
+        {"project": ["lab"], "job": ["prod"]},
+        {"job": ["lab"], "deployment": ["prod", "lab"]},
+    ) == {"project": ["lab"], "job": ["lab", "prod"], "deployment": ["lab", "prod"]}
 
 
 def test_extract_branches():
@@ -54,14 +80,14 @@ def test_extract_branches():
     }
 
     # Branch defined at job level.
-    assert extract_branches(
-        os.path.join(FILES_DIR, "job_branch.yml")
-    ) == {"job": ["prod"]}
+    assert extract_branches(os.path.join(FILES_DIR, "job_branch.yml")) == {
+        "job": ["prod"]
+    }
 
     # Branch defined at deployment level.
-    assert extract_branches(
-        os.path.join(FILES_DIR, "deployment_branch.yml")
-    ) == {"deployment": ["prod"]}
+    assert extract_branches(os.path.join(FILES_DIR, "deployment_branch.yml")) == {
+        "deployment": ["prod"]
+    }
 
     # Two jobs which are identical.
     assert extract_branches(os.path.join(FILES_DIR, "duplicate_jobs.yml")) == {
@@ -74,14 +100,14 @@ def test_extract_branches():
     }
 
     # Branch defined at project and deployment level.
-    assert extract_branches(os.path.join(FILES_DIR, "project_and_deployment_branch.yml")) == {
-        "deployment": ["prod"]
-    }
+    assert extract_branches(
+        os.path.join(FILES_DIR, "project_and_deployment_branch.yml")
+    ) == {"deployment": ["prod"]}
 
     # Branch defined at job and deployment level.
-    assert extract_branches(os.path.join(FILES_DIR, "job_and_deployment_branch.yml")) == {
-        "deployment": ["prod"]
-    }
+    assert extract_branches(
+        os.path.join(FILES_DIR, "job_and_deployment_branch.yml")
+    ) == {"deployment": ["prod"]}
 
     # Branch defined at all three levels.
     assert extract_branches(os.path.join(FILES_DIR, "all_branches.yml")) == {
@@ -104,81 +130,81 @@ def test_extract_branches():
 def test_process_projects():
 
     assert process_projects(FILES_DIR) == {
-        'https://github.com/realistic.git': {
-            'project': [
-                'prod',
+        "https://github.com/realistic.git": {
+            "project": [
+                "prod",
             ],
-            'job': [
-                'lab',
+            "job": [
+                "lab",
             ],
-            'deployment': [
-                'lab',
-                'prod',
+            "deployment": [
+                "lab",
+                "prod",
             ],
-            'rand': [
-                'prod',
-            ],
-        },
-        'https://github.com/no_jobs.git': {},
-        'https://github.com/duplicate_jobs.git': {
-            'project': [
-                'prod',
+            "rand": [
+                "prod",
             ],
         },
-        'https://github.com/double_quotes.git': {
-            'main': [
-                'prod',
+        "https://github.com/no_jobs.git": {},
+        "https://github.com/duplicate_jobs.git": {
+            "project": [
+                "prod",
             ],
         },
-        'https://github.com/project_and_deployment_branch.git': {
-            'deployment': [
-                'prod',
+        "https://github.com/double_quotes.git": {
+            "main": [
+                "prod",
             ],
         },
-        'https://github.com/project_branch.git': {
-            'project': [
-                'prod',
+        "https://github.com/project_and_deployment_branch.git": {
+            "deployment": [
+                "prod",
             ],
         },
-        'https://github.com/job_and_deployment_branch.git': {
-            'deployment': [
-                'prod',
+        "https://github.com/project_branch.git": {
+            "project": [
+                "prod",
             ],
         },
-        'https://github.com/all_branches.git': {
-            'deployment': [
-                'prod',
+        "https://github.com/job_and_deployment_branch.git": {
+            "deployment": [
+                "prod",
             ],
         },
-        'https://github.com/project_and_job_branch.git': {
-            'job': [
-                'prod',
+        "https://github.com/all_branches.git": {
+            "deployment": [
+                "prod",
             ],
         },
-        'https://github.com/null_branch.git': {},
-        'https://github.com/different_controllers.git': {
-            'project': [
-                'lab',
-                'prod',
+        "https://github.com/project_and_job_branch.git": {
+            "job": [
+                "prod",
             ],
         },
-        'https://github.com/no_branch.git': {},
-        'https://github.com/job_branch.git': {
-            'job': [
-                'prod',
+        "https://github.com/null_branch.git": {},
+        "https://github.com/different_controllers.git": {
+            "project": [
+                "lab",
+                "prod",
             ],
         },
-        'https://github.com/different_cases.git': {
-            'main': [
-                'prod',
-            ],
-            'MAIN': [
-                'prod',
+        "https://github.com/no_branch.git": {},
+        "https://github.com/job_branch.git": {
+            "job": [
+                "prod",
             ],
         },
-        'https://github.com/deployment_branch.git': {
-            'deployment': [
-                'prod',
+        "https://github.com/different_cases.git": {
+            "main": [
+                "prod",
+            ],
+            "MAIN": [
+                "prod",
             ],
         },
-     }   
+        "https://github.com/deployment_branch.git": {
+            "deployment": [
+                "prod",
+            ],
+        },
+    }
