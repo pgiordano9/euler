@@ -2,6 +2,20 @@ import yaml
 import glob
 
 
+def combine_projects(project_one: dict, project_two: dict) -> dict:
+    combined_project = project_one
+
+    for branch, controllers in project_two.items():
+        if branch in combined_project:
+            combined_project[branch] = list(set(combined_project[branch] + controllers))
+        else:
+            combined_project[branch] = controllers
+
+        combined_project[branch].sort()
+
+    return combined_project
+
+
 def extract_branches(project_filepath: str) -> dict:
     """Extract branches and corresponding AAP controllers from a project CaC file.
 
@@ -92,7 +106,14 @@ def process_projects(projects_dir: str) -> dict:
 
                 if "scm_url" in project_cac:
                     project_url = project_cac["scm_url"]
-                    branches[project_url] = extract_branches(project_filepath)
+
+                    if project_url in branches:
+                        branches[project_url] = combine_projects(
+                            extract_branches(project_filepath),
+                            branches[project_url],
+                        )
+                    else:
+                        branches[project_url] = extract_branches(project_filepath)
             except:
                 next
 
