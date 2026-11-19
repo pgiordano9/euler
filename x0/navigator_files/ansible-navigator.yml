@@ -1,0 +1,48 @@
+---
+# Ansible Navigator configuration file
+# This configuration defines how ansible-navigator runs playbooks in an execution environment
+ansible-navigator:
+  # Run in interactive mode for better debugging and user control
+  mode: interactive
+
+  ansible:
+    # Inventory configuration - defines which hosts and groups are available
+    inventory:
+      entries:
+        # Nautobot dynamic inventory for network devices
+        - nautobot_inventory.yml
+        # Local static inventory for localhost operations
+        - localhost_inventory.yml
+
+    # Default playbook to run
+    playbook:
+      path: ./playbook.yml
+
+  # Execution environment configuration for containerized Ansible runs
+  execution-environment:
+    # Enable containerized execution for consistent environment
+    enabled: true
+    # Custom execution environment image with network automation tools
+    image: us-gh-l-apg001.worldpay.lab/iaas-ee:stable-174
+
+    # Image pull configuration
+    pull:
+      arguments:
+        # Skip TLS verification for internal registry
+        - "--tls-verify=false"
+      # Pull image when tag changes
+      policy: tag
+
+    # Environment variables to pass into the container
+    environment-variables:
+      pass:
+        # Nautobot API connection details
+        - NAUTOBOT_URL
+        - NAUTOBOT_TOKEN
+        # Python warnings configuration
+        - PYTHONWARNINGS
+
+  # Artifact configuration - saves playbook execution details
+  playbook-artifact:
+    # Save artifacts with timestamp for tracking execution history
+    save-as: "{playbook_dir}/artifacts/{playbook_name}-artifact-{time_stamp}.json"
