@@ -11,7 +11,7 @@ def test_extract_image():
     # Realistic example.
     assert (
         extract_image(os.path.join(NAVIGATORS_DIR, "ansible-navigator.yml"))
-        == "image: us-gh-l-apg001.worldpay.lab/iaas-ee:stable-174"
+        == "us-gh-l-apg001.worldpay.lab/iaas-ee:stable-174"
     )
 
 

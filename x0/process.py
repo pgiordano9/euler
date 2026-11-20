@@ -1,8 +1,35 @@
-import yaml
 import glob
+import yaml
 
+def extract_image(navigator_filepath: str) -> str:
+    with open(navigator_filepath, "r", encoding="utf-8") as file:
+        navigator_cac = yaml.safe_load(file)
+        return navigator_cac["ansible-navigator"]["execution-environment"]["image"]
+
+extract_image("navigator_files/ansible-navigator.yml")
 
 def combine_projects(project_one: dict, project_two: dict) -> dict:
+    """Combine two project dicts.
+
+    Create a new, third dict by combining two project dicts. If the two dicts have 
+    fields in common (i.e. branches in common), create one just field representiing
+    that branch in the new dict and set its value to the union of the two dict's 
+    controller's list.
+
+    Args:
+        project_one: First project dict.
+        project_two: Second project dict.
+        project_filepath: Filepath (absolute or relative) to a project CaC file.
+
+    Returns:
+        A dict that is a combination of the two supplied project dicts. For example:
+
+        {
+          "branch_in_project_one": ["lab"],
+          "branch_in_project_two": ["prod"],
+          "branch_in_both_projects": ["lab", "prod"]
+        }
+    """
     combined_project = project_one
 
     for branch, controllers in project_two.items():
@@ -40,7 +67,7 @@ def extract_branches(project_filepath: str) -> dict:
         project_cac = yaml.safe_load(file)
 
         # If empty YAML file.
-        if project_cac == None:
+        if project_cac is None:
             return {}
 
         project_branch = project_cac.get("scm_branch")
@@ -115,7 +142,7 @@ def process_projects(projects_dir: str) -> dict:
                     else:
                         branches[project_url] = extract_branches(project_filepath)
             except:
-                next
+                pass
 
     return branches
 
