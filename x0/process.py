@@ -1,19 +1,19 @@
 import glob
 import yaml
 
+
 def extract_image(navigator_filepath: str) -> str:
     with open(navigator_filepath, "r", encoding="utf-8") as file:
         navigator_cac = yaml.safe_load(file)
         return navigator_cac["ansible-navigator"]["execution-environment"]["image"]
 
-extract_image("navigator_files/ansible-navigator.yml")
 
 def combine_projects(project_one: dict, project_two: dict) -> dict:
     """Combine two project dicts.
 
-    Create a new, third dict by combining two project dicts. If the two dicts have 
+    Create a new, third dict by combining two project dicts. If the two dicts have
     fields in common (i.e. branches in common), create one just field representiing
-    that branch in the new dict and set its value to the union of the two dict's 
+    that branch in the new dict and set its value to the union of the two dict's
     controller's list.
 
     Args:
@@ -147,4 +147,9 @@ def process_projects(projects_dir: str) -> dict:
     return branches
 
 
-extract_branches("project_files/different_controllers.yml")
+# Extract branches from project files.
+projects = process_projects("projects")
+
+for scm_url in projects.keys():
+    # Clone repo at scm_url.
+    extract_image("ansible-navigator.yml")
